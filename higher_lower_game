@@ -1,0 +1,54 @@
+#importing art and game_data
+from art import logo, vs
+from game_data import data
+from replit import clear
+
+# putting data into separate storage
+name_list = data
+
+# the idea should be: generate random number to choose random entry in the list (list_name[position]) and once that's done, compare the follower_count of both the entries. (50 starting entries)
+
+num_of_entry_plus_one = 51
+score = 0
+
+is_continue = True
+import random
+print(logo)
+
+while is_continue == True:
+  if num_of_entry_plus_one == 51:
+    position1 = random.randint(1, num_of_entry_plus_one)
+    first_person = name_list[position1]
+    num_of_entry_plus_one -= 1
+  print(f"Compare A: {first_person['name']}, {first_person['description']}, from {first_person['country']}")
+  # print(position)
+  position2 = random.randint(1, num_of_entry_plus_one)
+  second_person = name_list[position2]
+  num_of_entry_plus_one -= 1
+  print(vs)
+  print(f"Compare B: {second_person['name']}, {second_person['description']}, from {second_person['country']}")
+
+  choice = input("Who has more followers? Type 'A' or 'B': ")
+  # print(int(first_person['follower_count']))
+  # print(int(second_person['follower_count']))
+  
+  # choices match 
+  if int(first_person['follower_count']) > int(second_person['follower_count']) and choice == "A":
+    score += 1
+    clear()
+    print(logo)
+    print (f"You're right! Current score: {score}.")
+    first_person = second_person
+  # choices match
+  elif int(first_person['follower_count']) < int(second_person['follower_count']) and choice == "B":
+    score += 1
+    clear()
+    print(logo)
+    print (f"You're right! Current score: {score}.")
+    first_person = second_person
+  #choices don't match
+  else:
+    is_continue = False
+    print(f"Sorry, that's wrong. Your final score is: {score}.")
+    
+# removing the person's name from the list once it's been chosen? (pop? or .remove)
