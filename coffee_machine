@@ -1,0 +1,102 @@
+# importing the menu requirements
+from storage import MENU
+
+# 1) print report and say how much how many resources are left
+# 1(a) print prices of each type
+# 2) check resources are sufficient when a drink is reported
+# 3) coin operated, process coins and determine change and if there's enough money
+# 4) check transaction success? (not enough coins, refund instead)
+
+# setting variables
+money = 0
+resources = {
+    "water": 300,
+    "milk": 200,
+    "coffee": 100,
+}
+
+can_continue = True
+
+# declaring 'constants' of values
+
+QUARTERS = 0.25
+DIMES = 0.1
+NICKELS = 0.05
+PENNIES = 0.01
+
+total_water = resources["water"]
+total_coffee = resources["coffee"]
+total_milk = resources["milk"]
+milk_needed = 0
+
+
+# defining choosing a drink
+
+def choose_drink():
+    water_needed = MENU[drink_choice]["ingredients"]["water"]
+    coffee_needed = MENU[drink_choice]["ingredients"]["coffee"]
+    if drink_choice != "espresso":
+        milk_needed = MENU[drink_choice]["ingredients"]["milk"]
+    if drink_choice == "espresso":
+        return [water_needed, 0, coffee_needed]
+    return [water_needed, milk_needed, coffee_needed]
+
+
+def resource_check():
+    global total_water, total_milk, total_coffee, drink_specs
+    if drink_specs[0] > total_water and drink_specs[1] > total_milk and drink_specs[2] > total_coffee:
+        print("We're all out of water, milk, and coffee! I'll need a refill ASAP! ")
+        return False
+    else:
+        if drink_specs[0] > total_water:
+            print("Sorry, there's not enough water. ")
+            drink_specs = choose_drink()
+            return False
+        elif drink_specs[1] > total_milk:
+            print("Sorry, there's not enough milk. ")
+            drink_specs = choose_drink()
+            return False
+        elif drink_specs[2] > total_coffee:
+            print("Sorry, there's not enough coffee left. ")
+            drink_specs = choose_drink()
+            return False
+        else:
+            total_water -= drink_specs[0]
+            total_milk -= drink_specs[1]
+            total_coffee -= drink_specs[2]
+            return True
+
+
+def coin_counter(quarter, dime, nickel, penny):
+    total = quarter * QUARTERS + dime * DIMES + nickel * NICKELS + penny * PENNIES
+    return total
+
+
+while can_continue:
+    drink_choice = (input(
+        "\nWhat would you like? Typing 'off' will turn off the coffee shop. (espresso/latte/cappuccino): ")).lower()
+    if drink_choice == "off":
+        print("Beep boop... 💤")
+        can_continue = False
+        break
+    drink_specs = choose_drink()
+    drink_cost = MENU[drink_choice]["cost"]
+    supplies = resource_check()
+
+    if not supplies:
+        break
+    else:
+        print(f"The price of that drink is ${format(drink_cost, '.2f')}. Please insert coins. ")
+        num_quarters = int(input("How many quarters? "))
+        num_dimes = int(input("How many dimes? "))
+        num_nickels = int(input("How many nickels? "))
+        num_pennies = int(input("How many pennies? "))
+        money_total = coin_counter(num_quarters, num_dimes, num_nickels, num_pennies)
+
+        if money_total < drink_cost:
+            print("Sorry, you don't have enough money!")
+        elif money_total == drink_cost:
+            print("You've paid the exact amount, so no change. Here is your drink! (☕) ")
+        else:
+            change = money_total - drink_cost
+            print(f"Your change is ${format(change, '.2f')}. Here is your drink! (☕) ")
